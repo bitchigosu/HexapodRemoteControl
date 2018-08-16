@@ -1,0 +1,14 @@
+<resources>
+    <string name="app_name">Hexapod Control</string>
+    <string name="direction_up">Direction: Up</string>
+    <string name="direction_upright">Direction: Up Right</string>
+    <string name="direction_right">Direction: Right</string>
+    <string name="direction_downright">Direction: Down Right</string>
+    <string name="direction_down">Direction: Down</string>
+    <string name="direction_downleft">Direction: Down Left</string>
+    <string name="direction_left">Direction: Left</string>
+    <string name="direction_upleft">Direction: Up Left</string>
+    <string name="direction_unknown">Direction:</string>
+
+
+</resources>
