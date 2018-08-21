@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.example.konstantin.dadad">
+    package="com.example.konstantin.hexapod">
 
     <uses-permission android:name="android.permission.INTERNET" />
 
@@ -10,7 +10,14 @@
         android:label="Diploma"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".MainActivity">
+        <activity
+            android:name=".StreamActivity"
+            android:screenOrientation="sensorLandscape"
+            android:theme="@style/Theme.AppCompat.Light.NoActionBar" />
+        <activity
+            android:name=".catalog_activity"
+            android:label="Diploma"
+            android:theme="@style/AppTheme">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -18,9 +25,15 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".StreamActivity"
-            android:screenOrientation="sensorLandscape"
-            android:theme="@style/Theme.AppCompat.Light.NoActionBar" />
+            android:name=".EditorActivity"
+            android:parentActivityName=".catalog_activity"
+            android:theme="@style/AppTheme">
+
+        </activity>
+        <provider
+            android:authorities="com.example.konstantin.hexapod"
+            android:name=".data.AddressProvider"
+            android:exported="false" />
     </application>
 
 </manifest>

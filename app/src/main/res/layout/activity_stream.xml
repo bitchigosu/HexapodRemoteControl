@@ -3,7 +3,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    tools:context="com.example.konstantin.dadad.StreamActivity">
+    tools:context="com.example.konstantin.hexapod.StreamActivity">
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent">
@@ -20,6 +20,7 @@
             app:layout_constraintTop_toTopOf="parent" />
 
     </RelativeLayout>
+
     <LinearLayout
         android:id="@+id/linearLayout1"
         android:layout_width="wrap_content"

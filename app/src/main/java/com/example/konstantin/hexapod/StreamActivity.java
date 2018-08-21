@@ -1,9 +1,14 @@
-package com.example.konstantin.dadad;
+package com.example.konstantin.hexapod;
 
 import android.annotation.SuppressLint;
+import android.app.LoaderManager;
+import android.content.CursorLoader;
 import android.content.Intent;
+import android.content.Loader;
+import android.database.Cursor;
+import android.net.Uri;
 import android.os.Handler;
-import android.os.Message;
+import android.provider.BaseColumns;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
@@ -13,6 +18,7 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.example.konstantin.hexapod.data.AddressContract;
 import com.example.kvlmjpeg.DisplayMode;
 import com.example.kvlmjpeg.Mjpeg;
 import com.example.kvlmjpeg.MjpegView;
@@ -20,12 +26,12 @@ import com.example.kvlmjpeg.MjpegView;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
-public class StreamActivity extends AppCompatActivity {
+public class StreamActivity extends AppCompatActivity implements LoaderManager.LoaderCallbacks {
 
     @BindView(R.id.mjpegSurfaceView)
     MjpegView mjpegeView;
 
-    private String URL, URLData;
+    private String URL;
     private int port;
 
     private String directionz;
@@ -34,6 +40,8 @@ public class StreamActivity extends AppCompatActivity {
 
     private TextView textView5;
     private joystick js;
+    private Uri uriData;
+    private AddressCursorAdapter addressCursorAdapter;
 
     @SuppressLint("ClickableViewAccessibility")
     @Override
@@ -41,15 +49,16 @@ public class StreamActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_stream);
         ButterKnife.bind(this);
-        URL=getIntent().getStringExtra("ip");
-        URLData=getIntent().getStringExtra("ipdata");
-        port=getIntent().getIntExtra("port",8080);
-        loadStream();
+
+        Intent intent=getIntent();
+        uriData=intent.getData();
+        addressCursorAdapter =new AddressCursorAdapter(this,null);
+        getLoaderManager().initLoader(0,null,this);
+
 
         RelativeLayout layout_joystick;
 
         textView5 = (TextView)findViewById(R.id.textView5);
-
         layout_joystick = (RelativeLayout)findViewById(R.id.layout_joystick);
 
         js = new joystick(getApplicationContext(), layout_joystick, R.drawable.image_button);
@@ -64,7 +73,8 @@ public class StreamActivity extends AppCompatActivity {
         layout_joystick.setOnTouchListener(new View.OnTouchListener() {
             public boolean onTouch(View arg0, MotionEvent arg1) {
                 js.drawStick(arg1);
-                if(arg1.getAction() == MotionEvent.ACTION_DOWN) {
+                if(arg1.getAction() == MotionEvent.ACTION_DOWN ||
+                        arg1.getAction() == MotionEvent.ACTION_MOVE ) {
 
                     int direction = js.get8Direction();
                     if (direction == joystick.STICK_UP) {
@@ -117,7 +127,7 @@ public class StreamActivity extends AppCompatActivity {
     Runnable runnable=new Runnable() {
         @Override
         public void run() {
-            ClientTask ct=new ClientTask(URLData,port);
+            ClientTask ct=new ClientTask(URL,port);
             ct.execute(directionz);
             handler.postDelayed(runnable,4000);
             handler.removeCallbacksAndMessages(runnable);
@@ -126,7 +136,7 @@ public class StreamActivity extends AppCompatActivity {
 
 
     private void loadStream(){
-        Mjpeg.newInstance().open(URL+":"+port+"/?action=stream", 5)
+        Mjpeg.newInstance().open("http://" + URL + ":" + port + "/axis-cgi/mjpg/video.cgi?resolution=352x288" /*"/?action=stream"*/, 5)
                 .subscribe(
                         mjpegInputStream -> {
                             mjpegeView.setSource(mjpegInputStream);
@@ -143,7 +153,7 @@ public class StreamActivity extends AppCompatActivity {
     @Override
     protected void onResume() {
         super.onResume();
-        loadStream();
+       //TODO: loadStream();
     }
 
     @Override
@@ -153,9 +163,41 @@ public class StreamActivity extends AppCompatActivity {
     }
     @Override
     public void onBackPressed() {
-        startActivity(new Intent(this,MainActivity.class));
+        super.onBackPressed();
     }
 
 
+    @Override
+    public Loader onCreateLoader(int id, Bundle args) {
+        String[] projection = {
+                BaseColumns._ID,
+                AddressContract.AdressEntry.COLUMN_ADRESS,
+                AddressContract.AdressEntry.COLUMN_PORT
+        };
+        return new CursorLoader(this,uriData,projection,null,null,null);
+    }
+
+    @Override
+    public void onLoadFinished(Loader loader, Object data) {
+        if ((Cursor)data != null && ((Cursor) data).getCount() > 0) {
+            ((Cursor) data).moveToFirst();
+            int addressIndex = ((Cursor) data).getColumnIndex(AddressContract.AdressEntry.COLUMN_ADRESS);
+            int portIndex = ((Cursor) data).getColumnIndex(AddressContract.AdressEntry.COLUMN_PORT);
+
+            URL = ((Cursor) data).getString(addressIndex);
+            String _port = ((Cursor) data).getString(portIndex);
+            port = Integer.parseInt(_port);
+
+            loadStream();
+        }
+
+        addressCursorAdapter.swapCursor((Cursor) data);
+
+    }
+
+    @Override
+    public void onLoaderReset(Loader loader) {
+        addressCursorAdapter.swapCursor(null);
+    }
 }
 

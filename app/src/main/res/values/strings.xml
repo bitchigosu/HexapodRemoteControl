@@ -9,6 +9,12 @@
     <string name="direction_left">Direction: Left</string>
     <string name="direction_upleft">Direction: Up Left</string>
     <string name="direction_unknown">Direction:</string>
+    <string name="title_activity_catalog_activity">Choose a server</string>
+    <string name="connectBtn">Connect</string>
+    <string name="action_save">Save</string>
+    <string name="action_delete">Delete</string>
+    <string name="new_adress_title">Add address</string>
+    <string name="edit_address_title">Edit address</string>
 
 
 </resources>

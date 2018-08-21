@@ -1,4 +1,4 @@
-package com.example.konstantin.dadad;
+package com.example.konstantin.hexapod;
 
 import android.content.Context;
 import android.support.test.InstrumentationRegistry;

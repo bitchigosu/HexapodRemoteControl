@@ -1,4 +1,4 @@
-package com.example.konstantin.dadad;
+package com.example.konstantin.hexapod;
 
 import org.junit.Test;
 
