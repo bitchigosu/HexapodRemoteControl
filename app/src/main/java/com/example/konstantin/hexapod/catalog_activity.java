@@ -40,6 +40,10 @@ public class catalog_activity extends AppCompatActivity implements LoaderManager
         cursorAdapter = new AddressCursorAdapter(this,null);
         addressListView.setAdapter(cursorAdapter);
 
+        View emptyView = (View)findViewById(R.id.empty_view);
+        addressListView.setEmptyView(emptyView);
+
+
         registerForContextMenu(addressListView);
 
         addressListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {

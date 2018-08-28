@@ -25,7 +25,7 @@ public class EditorActivity extends AppCompatActivity implements LoaderManager.L
     private EditText editTextPort;
 
     private AddressCursorAdapter cursorAdapter;
-    private Uri adressData;
+    private Uri addressData;
 
 
 
@@ -35,8 +35,8 @@ public class EditorActivity extends AppCompatActivity implements LoaderManager.L
         setContentView(R.layout.activity_editor);
 
         Intent intent=getIntent();
-        adressData=intent.getData();
-        if (adressData==null) {
+        addressData =intent.getData();
+        if (addressData ==null) {
             setTitle(getString(R.string.new_adress_title));
         }
         else {
@@ -81,14 +81,14 @@ public class EditorActivity extends AppCompatActivity implements LoaderManager.L
         values.put(AdressEntry.COLUMN_ADRESS, editTextIP.getText().toString().trim());
         values.put(AdressEntry.COLUMN_PORT, Integer.parseInt(editTextPort.getText().toString()));
 
-        if (adressData==null) {
+        if (addressData ==null) {
             Uri newUri = getContentResolver().insert(AdressEntry.CONTENT_URI,values);
             if (newUri == null)
                 Toast.makeText(this, "Error with saving pet", Toast.LENGTH_LONG).show();
             else
                 Toast.makeText(this, " Adress is saved ", Toast.LENGTH_LONG).show();
         } else {
-            int updatedId=getContentResolver().update(adressData,values,null,null);
+            int updatedId=getContentResolver().update(addressData,values,null,null);
             if (updatedId == 0)
                 Toast.makeText(this, "Error with updating pet", Toast.LENGTH_LONG).show();
             else
@@ -97,7 +97,7 @@ public class EditorActivity extends AppCompatActivity implements LoaderManager.L
     }
 
     private void deleteAddress() {
-        int deleteId = getContentResolver().delete(adressData,null,null);
+        int deleteId = getContentResolver().delete(addressData,null,null);
         if (deleteId==0)
             Toast.makeText(this,"Address hasnt been deleted",Toast.LENGTH_SHORT).show();
         else
@@ -122,7 +122,7 @@ public class EditorActivity extends AppCompatActivity implements LoaderManager.L
                 AdressEntry.COLUMN_ADRESS,
                 AdressEntry.COLUMN_PORT
         };
-        return new CursorLoader(this,adressData,projection,null,null,null);
+        return new CursorLoader(this, addressData,projection,null,null,null);
     }
 
     @Override
